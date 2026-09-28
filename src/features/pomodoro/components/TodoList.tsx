@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import type { FormEvent } from "react";
 import { Check, ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
 export interface TodoItem {
@@ -9,27 +9,34 @@ export interface TodoItem {
 
 interface TodoListProps {
   items: TodoItem[];
+  expanded: boolean;
+  adding: boolean;
+  draft: string;
   onAdd: (text: string) => void;
   onToggle: (id: number) => void;
+  onExpandedChange: (expanded: boolean) => void;
+  onAddingChange: (adding: boolean) => void;
+  onDraftChange: (draft: string) => void;
 }
 
-export function TodoList({ items, onAdd, onToggle }: TodoListProps) {
-  const [expanded, setExpanded] = useState(false);
-  const [adding, setAdding] = useState(false);
-  const [draft, setDraft] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (adding) inputRef.current?.focus();
-  }, [adding]);
-
+export function TodoList({
+  items,
+  expanded,
+  adding,
+  draft,
+  onAdd,
+  onToggle,
+  onExpandedChange,
+  onAddingChange,
+  onDraftChange,
+}: TodoListProps) {
   const submit = (event: FormEvent) => {
     event.preventDefault();
     const text = draft.trim();
     if (!text) return;
     onAdd(text);
-    setDraft("");
-    setAdding(false);
+    onDraftChange("");
+    onAddingChange(false);
   };
 
   return (
@@ -46,7 +53,7 @@ export function TodoList({ items, onAdd, onToggle }: TodoListProps) {
             type="button"
             aria-label="Add task"
             title="Add task"
-            onClick={() => setAdding(true)}
+            onClick={() => onAddingChange(true)}
             className="grid size-8 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Plus size={17} strokeWidth={1.5} />
@@ -79,11 +86,11 @@ export function TodoList({ items, onAdd, onToggle }: TodoListProps) {
         {adding && (
           <form onSubmit={submit} className="mt-4">
             <input
-              ref={inputRef}
+              autoFocus
               value={draft}
-              onChange={(event) => setDraft(event.target.value)}
+              onChange={(event) => onDraftChange(event.target.value)}
               onBlur={() => {
-                if (!draft.trim()) setAdding(false);
+                if (!draft.trim()) onAddingChange(false);
               }}
               aria-label="New task"
               placeholder="New task"
@@ -102,7 +109,7 @@ export function TodoList({ items, onAdd, onToggle }: TodoListProps) {
         aria-label={expanded ? "Collapse todo list" : "Expand todo list"}
         title={expanded ? "Collapse todo list" : "Expand todo list"}
         aria-expanded={expanded}
-        onClick={() => setExpanded((value) => !value)}
+        onClick={() => onExpandedChange(!expanded)}
         className="glass-surface grid size-10 shrink-0 place-items-center rounded-r-md border border-l-0 border-glass-border text-muted-foreground shadow-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {expanded ? (

@@ -40,6 +40,9 @@ function Index() {
   const [isDark, setIsDark] = useState(false);
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [nextTodoId, setNextTodoId] = useState(1);
+  const [todoExpanded, setTodoExpanded] = useState(false);
+  const [todoAdding, setTodoAdding] = useState(false);
+  const [todoDraft, setTodoDraft] = useState("");
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
@@ -76,7 +79,13 @@ function Index() {
 
       <TodoList
         items={todos}
+        expanded={todoExpanded}
+        adding={todoAdding}
+        draft={todoDraft}
         onAdd={addTodo}
+        onExpandedChange={setTodoExpanded}
+        onAddingChange={setTodoAdding}
+        onDraftChange={setTodoDraft}
         onToggle={(id) =>
           setTodos((current) =>
             current.map((item) =>
