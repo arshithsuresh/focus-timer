@@ -28,6 +28,7 @@ function sanitizeDraft(draft: PomodoroSettings, current: PomodoroSettings) {
   };
   return clampSettings({
     ...current,
+    backgroundUrl: draft.backgroundUrl.trim(),
     focusMinutes: parse(draft.focusMinutes as unknown as string, current.focusMinutes),
     shortBreakMinutes: parse(
       draft.shortBreakMinutes as unknown as string,
@@ -100,6 +101,24 @@ export function SettingsModal({
               />
             </div>
           ))}
+          <div>
+            <label
+              htmlFor="settings-background-url"
+              className="text-sm text-muted-foreground"
+            >
+              Custom background URL
+            </label>
+            <input
+              id="settings-background-url"
+              type="url"
+              value={draft.backgroundUrl}
+              onChange={(event) =>
+                setDraft({ ...draft, backgroundUrl: event.target.value })
+              }
+              placeholder="Image or video URL"
+              className="mt-1.5 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
+            />
+          </div>
         </div>
         <div className="mt-8 flex items-center justify-end gap-3">
           <button
