@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import { Check, ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Plus, X } from "lucide-react";
 
 export interface TodoItem {
   id: number;
@@ -14,6 +14,7 @@ interface TodoListProps {
   draft: string;
   onAdd: (text: string) => void;
   onToggle: (id: number) => void;
+  onDelete: (id: number) => void;
   onExpandedChange: (expanded: boolean) => void;
   onAddingChange: (adding: boolean) => void;
   onDraftChange: (draft: string) => void;
@@ -26,6 +27,7 @@ export function TodoList({
   draft,
   onAdd,
   onToggle,
+  onDelete,
   onExpandedChange,
   onAddingChange,
   onDraftChange,
@@ -62,24 +64,38 @@ export function TodoList({
 
         <div className="mt-4 max-h-64 space-y-3 overflow-y-auto">
           {items.map((item) => (
-            <label key={item.id} className="flex cursor-pointer items-start gap-3 text-sm">
-              <input
-                type="checkbox"
-                checked={item.completed}
-                onChange={() => onToggle(item.id)}
-                className="peer sr-only"
-              />
-              <span className="mt-0.5 grid size-4 shrink-0 place-items-center rounded-sm border border-muted-foreground/60 text-transparent transition-colors peer-checked:border-foreground peer-checked:bg-foreground peer-checked:text-background peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background">
-                <Check size={11} strokeWidth={2} />
-              </span>
-              <span
-                className={`min-w-0 break-words text-foreground transition-opacity ${
-                  item.completed ? "line-through opacity-45" : ""
-                }`}
+            <div
+              key={item.id}
+              className="group flex items-start gap-2 text-sm"
+            >
+              <label className="flex min-w-0 flex-1 cursor-pointer items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={item.completed}
+                  onChange={() => onToggle(item.id)}
+                  className="peer sr-only"
+                />
+                <span className="mt-0.5 grid size-4 shrink-0 place-items-center rounded-sm border border-muted-foreground/60 text-transparent transition-colors peer-checked:border-foreground peer-checked:bg-foreground peer-checked:text-background peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background">
+                  <Check size={11} strokeWidth={2} />
+                </span>
+                <span
+                  className={`min-w-0 break-words text-foreground transition-opacity ${
+                    item.completed ? "line-through opacity-45" : ""
+                  }`}
+                >
+                  {item.text}
+                </span>
+              </label>
+              <button
+                type="button"
+                aria-label={`Remove task: ${item.text}`}
+                title="Remove task"
+                onClick={() => onDelete(item.id)}
+                className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full text-muted-foreground opacity-40 transition-opacity hover:bg-accent hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                {item.text}
-              </span>
-            </label>
+                <X size={13} strokeWidth={1.5} />
+              </button>
+            </div>
           ))}
         </div>
 
