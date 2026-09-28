@@ -34,7 +34,7 @@ export function TodoList({ items, onAdd, onToggle }: TodoListProps) {
 
   return (
     <aside
-      className={`fixed left-0 top-1/2 z-30 flex -translate-y-1/2 items-center transition-transform duration-300 ease-out ${
+      className={`fixed bottom-4 left-0 z-30 flex items-center transition-transform duration-300 ease-out md:bottom-auto md:top-1/2 md:-translate-y-1/2 ${
         expanded ? "translate-x-0" : "-translate-x-[calc(100%-2.5rem)]"
       }`}
       aria-label="Todo list"
