@@ -3,6 +3,7 @@ interface BackgroundManagerProps {
 }
 
 const VIDEO_EXTENSION = /\.(mp4|webm|ogg|mov|m4v)$/i;
+const DEFAULT_IMAGE = "http://localhost:8080/bg-black.jpg";
 
 function isVideoUrl(url: string): boolean {
   const path = url.trim().split(/[?#]/, 1)[0] ?? "";
@@ -10,20 +11,13 @@ function isVideoUrl(url: string): boolean {
 }
 
 export function BackgroundManager({ url }: BackgroundManagerProps) {
-  const source = url.trim();
-  if (!source) return null;
+  let source = url.trim();
+  if (!source) source = DEFAULT_IMAGE;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
       {isVideoUrl(source) ? (
-        <video
-          src={source}
-          className="size-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-        />
+        <video src={source} className="size-full object-cover" autoPlay muted loop playsInline />
       ) : (
         <img src={source} alt="" className="size-full object-cover" />
       )}

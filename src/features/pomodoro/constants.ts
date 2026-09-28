@@ -1,8 +1,8 @@
 import type { Phase, PomodoroSettings } from "./types";
 
 export const DEFAULT_SETTINGS: PomodoroSettings = {
-  focusMinutes: 25,
-  shortBreakMinutes: 5,
+  focusMinutes: 45,
+  shortBreakMinutes: 8,
   longBreakMinutes: 15,
   backgroundUrl: "",
   longBreakInterval: 4,

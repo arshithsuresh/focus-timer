@@ -1,5 +1,5 @@
-import type { FormEvent } from "react";
 import { Check, ChevronLeft, ChevronRight, Plus, X } from "lucide-react";
+import type { FormEvent } from "react";
 
 export interface TodoItem {
   id: number;
@@ -48,7 +48,7 @@ export function TodoList({
       }`}
       aria-label="Todo list"
     >
-      <div className="glass-surface w-[min(18rem,calc(100vw-3.5rem))] rounded-r-lg border border-l-0 border-glass-border px-6 py-5 shadow-sm">
+      <div className="glass-surface dark:bg-background/50 w-[min(24rem,calc(100vw-3.5rem))] rounded-r-lg  border-glass-border px-6 py-5 shadow-sm">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-sm font-medium text-foreground">Tasks</h2>
           <button
@@ -64,10 +64,7 @@ export function TodoList({
 
         <div className="mt-4 max-h-64 space-y-3 overflow-y-auto">
           {items.map((item) => (
-            <div
-              key={item.id}
-              className="group flex items-start gap-2 text-sm"
-            >
+            <div key={item.id} className="group flex items-start gap-2 text-sm">
               <label className="flex min-w-0 flex-1 cursor-pointer items-start gap-3">
                 <input
                   type="checkbox"
@@ -110,7 +107,7 @@ export function TodoList({
               }}
               aria-label="New task"
               placeholder="New task"
-              className="w-full border-0 border-b border-border bg-transparent px-0 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-foreground"
+              className="w-full border-0 border-b-1  bg-transparent px-0 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-white"
             />
           </form>
         )}
@@ -126,7 +123,7 @@ export function TodoList({
         title={expanded ? "Collapse todo list" : "Expand todo list"}
         aria-expanded={expanded}
         onClick={() => onExpandedChange(!expanded)}
-        className="glass-surface grid size-10 shrink-0 place-items-center rounded-r-md border border-l-0 border-glass-border text-muted-foreground shadow-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="glass-surface grid size-10 shrink-0 place-items-center rounded-r-md  border-glass-border text-muted-foreground shadow-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {expanded ? (
           <ChevronLeft size={18} strokeWidth={1.5} />

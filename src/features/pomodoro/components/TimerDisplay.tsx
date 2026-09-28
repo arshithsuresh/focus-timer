@@ -19,29 +19,18 @@ function formatClock(totalSeconds: number): string {
 const RADIUS = 150;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-export function TimerDisplay({
-  phase,
-  secondsRemaining,
-  totalSeconds,
-}: TimerDisplayProps) {
-  const progress =
-    totalSeconds > 0 ? 1 - secondsRemaining / totalSeconds : 0;
+export function TimerDisplay({ phase, secondsRemaining, totalSeconds }: TimerDisplayProps) {
+  const progress = totalSeconds > 0 ? 1 - secondsRemaining / totalSeconds : 0;
 
   return (
     <div className="relative flex items-center justify-center">
-      <svg
-        width="340"
-        height="340"
-        viewBox="0 0 340 340"
-        className="-rotate-90"
-        aria-hidden="true"
-      >
+      <svg width="340" height="340" viewBox="0 0 340 340" className="-rotate-90" aria-hidden="true">
         <circle
           cx="170"
           cy="170"
           r={RADIUS}
           fill="none"
-          strokeWidth="1.5"
+          strokeWidth="8"
           className="stroke-border"
         />
         <circle
@@ -49,7 +38,7 @@ export function TimerDisplay({
           cy="170"
           r={RADIUS}
           fill="none"
-          strokeWidth="1.5"
+          strokeWidth="5"
           strokeLinecap="round"
           strokeDasharray={CIRCUMFERENCE}
           strokeDashoffset={CIRCUMFERENCE * (1 - progress)}
