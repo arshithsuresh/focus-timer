@@ -95,7 +95,7 @@ function Index() {
         }
       />
 
-      <main className="glass-surface relative z-10 flex flex-col items-center rounded-lg border border-glass-border px-3 py-8 shadow-sm sm:px-10 sm:py-10">
+      <main className="glass-surface glass-soft-edge relative z-10 flex flex-col items-center rounded-2xl px-3 py-8 sm:px-10 sm:py-10">
         <TimerDisplay
           phase={pomodoro.phase}
           secondsRemaining={pomodoro.secondsRemaining}

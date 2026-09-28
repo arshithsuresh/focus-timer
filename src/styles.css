@@ -142,7 +142,14 @@
 
 @utility glass-surface {
   background-color: var(--color-glass);
-  backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(24px) saturate(130%);
+}
+
+/* Borderless timer card: a soft diffused halo replaces the hard edge. */
+@utility glass-soft-edge {
+  box-shadow:
+    0 0 18px 2px color-mix(in oklab, var(--color-glass-border) 70%, transparent),
+    0 0 56px 10px color-mix(in oklab, var(--color-glass-border) 35%, transparent);
 }
 
 @layer base {
