@@ -16,9 +16,9 @@ type EditableField = Extract<
 >;
 
 const FIELDS: Array<{ key: EditableField; label: string }> = [
-  { key: "focusMinutes", label: `Focus (${PHASE_LABELS.focus})` },
-  { key: "shortBreakMinutes", label: `Short Break (${PHASE_LABELS.short})` },
-  { key: "longBreakMinutes", label: `Long Break (${PHASE_LABELS.long})` },
+  { key: "focusMinutes", label: PHASE_LABELS.focus },
+  { key: "shortBreakMinutes", label: PHASE_LABELS.short },
+  { key: "longBreakMinutes", label: PHASE_LABELS.long },
 ];
 
 function sanitizeDraft(draft: PomodoroSettings, current: PomodoroSettings) {
