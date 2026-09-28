@@ -28,6 +28,7 @@ function sanitizeDraft(draft: PomodoroSettings, current: PomodoroSettings) {
   };
   return clampSettings({
     ...current,
+    backgroundUrl: draft.backgroundUrl.trim(),
     focusMinutes: parse(draft.focusMinutes as unknown as string, current.focusMinutes),
     shortBreakMinutes: parse(
       draft.shortBreakMinutes as unknown as string,
