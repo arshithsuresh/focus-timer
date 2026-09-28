@@ -93,6 +93,9 @@ function Index() {
             ),
           )
         }
+        onDelete={(id) =>
+          setTodos((current) => current.filter((item) => item.id !== id))
+        }
       />
 
       <main className="glass-surface glass-soft-edge relative z-10 flex flex-col items-center rounded-2xl px-3 py-8 sm:px-10 sm:py-10">
