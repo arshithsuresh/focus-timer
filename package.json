@@ -1,8 +1,8 @@
 {
-  "name": "zen-timer",
+  "name": "focus-timer",
   "sideEffects": false,
   "type": "module",
-  "homepage": "https://arshithsuresh.github.io/zen-timer/",
+  "homepage": "https://arshithsuresh.github.io/focus-timer/",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",

@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 // Standard Vite + React SPA. `base` matches the GitHub Pages project path so
 // asset URLs resolve correctly when deployed to <user>.github.io/zen-timer/.
 export default defineConfig({
-  base: "/zen-timer/",
+  base: "/focus-timer/",
   plugins: [react(), tailwindcss()],
   resolve: { tsconfigPaths: true },
 });
