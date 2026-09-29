@@ -6,32 +6,9 @@ import { ThemeToggle } from "@/features/pomodoro/components/ThemeToggle";
 import { TimerDisplay } from "@/features/pomodoro/components/TimerDisplay";
 import { TodoList, type TodoItem } from "@/features/pomodoro/components/TodoList";
 import { usePomodoro } from "@/features/pomodoro/usePomodoro";
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Pomodoro — Minimal Focus Timer" },
-      {
-        name: "description",
-        content:
-          "A minimalist Pomodoro timer: focus sessions with short and long breaks, gentle chimes, and automatic phase switching.",
-      },
-      { property: "og:title", content: "Pomodoro — Minimal Focus Timer" },
-      {
-        property: "og:description",
-        content:
-          "A minimalist Pomodoro timer for focused work — focus, short breaks, and long breaks with automatic switching.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: Index,
-});
-
-function Index() {
+export default function App() {
   const pomodoro = usePomodoro();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);

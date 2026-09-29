@@ -3,7 +3,7 @@ interface BackgroundManagerProps {
 }
 
 const VIDEO_EXTENSION = /\.(mp4|webm|ogg|mov|m4v)$/i;
-const DEFAULT_IMAGE = "http://localhost:8080/bg-black.jpg";
+const DEFAULT_IMAGE = "bg-black.jpg";
 
 function isVideoUrl(url: string): boolean {
   const path = url.trim().split(/[?#]/, 1)[0] ?? "";

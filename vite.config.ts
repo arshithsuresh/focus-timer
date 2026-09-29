@@ -1,11 +1,11 @@
-// @lovable.dev/vite-tanstack-config already includes the following — do NOT add them manually
-// or the app will break with duplicate plugins:
-//   - TanStack devtools (dev-only, first), tanstackStart, viteReact, tailwindcss, tsConfigPaths,
-//     nitro (build-only using cloudflare as a default target), VITE_* env injection, @ path alias,
-//     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
-// You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
+import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
+// Standard Vite + React SPA. `base` matches the GitHub Pages project path so
+// asset URLs resolve correctly when deployed to <user>.github.io/zen-timer/.
 export default defineConfig({
   base: "/zen-timer/",
+  plugins: [react(), tailwindcss()],
+  resolve: { tsconfigPaths: true },
 });
