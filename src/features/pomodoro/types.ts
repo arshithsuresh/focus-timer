@@ -7,4 +7,5 @@ export interface PomodoroSettings {
   backgroundUrl: string;
   /** Number of completed focus sessions before a long break. */
   longBreakInterval: number;
+  showNotesAndTasks: boolean;
 }

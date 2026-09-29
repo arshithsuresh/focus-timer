@@ -1,85 +1,78 @@
-import { Check, Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 
-export interface TodoItem {
+export interface NoteItem {
   id: number;
   text: string;
-  completed: boolean;
 }
 
-export const TODOS_STORAGE_KEY = "zen_timer_todos";
-export const MAX_TODOS = 8;
+export const NOTES_STORAGE_KEY = "zen_timer_notes";
+export const MAX_NOTES = 8;
 
-export function isValidTodoItem(item: unknown): item is TodoItem {
+export function isValidNoteItem(item: unknown): item is NoteItem {
   return (
     typeof item === "object" &&
     item !== null &&
-    typeof (item as TodoItem).id === "number" &&
-    typeof (item as TodoItem).text === "string" &&
-    typeof (item as TodoItem).completed === "boolean"
+    typeof (item as NoteItem).id === "number" &&
+    typeof (item as NoteItem).text === "string"
   );
 }
 
-export function loadStoredTodos(key: string = TODOS_STORAGE_KEY): TodoItem[] {
+export function loadStoredNotes(key: string = NOTES_STORAGE_KEY): NoteItem[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = window.localStorage.getItem(key);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed)) {
-      return parsed.filter(isValidTodoItem).slice(0, MAX_TODOS);
+      return parsed.filter(isValidNoteItem).slice(0, MAX_NOTES);
     }
   } catch (error) {
-    console.error("Failed to load todos from localStorage:", error);
+    console.error("Failed to load notes from localStorage:", error);
   }
   return [];
 }
 
-export function saveStoredTodos(
-  todos: TodoItem[],
-  key: string = TODOS_STORAGE_KEY,
+export function saveStoredNotes(
+  notes: NoteItem[],
+  key: string = NOTES_STORAGE_KEY,
 ): void {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(key, JSON.stringify(todos.slice(0, MAX_TODOS)));
+    window.localStorage.setItem(key, JSON.stringify(notes.slice(0, MAX_NOTES)));
   } catch (error) {
-    console.error("Failed to save todos to localStorage:", error);
+    console.error("Failed to save notes to localStorage:", error);
   }
 }
 
-export interface TodoListProps {
-  items?: TodoItem[];
+export interface NotesProps {
+  items?: NoteItem[];
   adding?: boolean;
   draft?: string;
   onAdd?: (text: string) => void;
-  onToggle?: (id: number) => void;
   onDelete?: (id: number) => void;
   onAddingChange?: (adding: boolean) => void;
   onDraftChange?: (draft: string) => void;
   storageKey?: string;
-  // Optional for backward compatibility
-  expanded?: boolean;
-  onExpandedChange?: (expanded: boolean) => void;
 }
 
-export function TodoList({
+export function Notes({
   items: externalItems,
   adding: externalAdding,
   draft: externalDraft,
   onAdd: externalOnAdd,
-  onToggle: externalOnToggle,
   onDelete: externalOnDelete,
   onAddingChange: externalOnAddingChange,
   onDraftChange: externalOnDraftChange,
-  storageKey = TODOS_STORAGE_KEY,
-}: TodoListProps = {}) {
-  const [internalItems, setInternalItems] = useState<TodoItem[]>(() =>
-    externalItems === undefined ? loadStoredTodos(storageKey) : [],
+  storageKey = NOTES_STORAGE_KEY,
+}: NotesProps = {}) {
+  const [internalItems, setInternalItems] = useState<NoteItem[]>(() =>
+    externalItems === undefined ? loadStoredNotes(storageKey) : [],
   );
 
   useEffect(() => {
     if (externalItems === undefined) {
-      saveStoredTodos(internalItems, storageKey);
+      saveStoredNotes(internalItems, storageKey);
     }
   }, [internalItems, externalItems, storageKey]);
 
@@ -87,7 +80,7 @@ export function TodoList({
     if (externalItems !== undefined) return;
     const handleStorage = (event: StorageEvent) => {
       if (event.key === storageKey) {
-        setInternalItems(loadStoredTodos(storageKey));
+        setInternalItems(loadStoredNotes(storageKey));
       }
     };
     window.addEventListener("storage", handleStorage);
@@ -100,22 +93,12 @@ export function TodoList({
     externalOnAdd ??
     ((text: string) => {
       setInternalItems((curr) => {
-        if (curr.length >= MAX_TODOS) return curr;
+        if (curr.length >= MAX_NOTES) return curr;
         return [
           ...curr,
-          { id: Date.now(), text, completed: false },
+          { id: Date.now(), text },
         ];
       });
-    });
-
-  const onToggle =
-    externalOnToggle ??
-    ((id: number) => {
-      setInternalItems((curr) =>
-        curr.map((item) =>
-          item.id === id ? { ...item, completed: !item.completed } : item,
-        ),
-      );
     });
 
   const onDelete =
@@ -135,29 +118,29 @@ export function TodoList({
   const submit = (event: FormEvent) => {
     event.preventDefault();
     const text = draft.trim();
-    if (!text || items.length >= MAX_TODOS) return;
+    if (!text || items.length >= MAX_NOTES) return;
     onAdd(text);
     onDraftChange("");
     onAddingChange(false);
   };
 
   return (
-    <aside className="w-full max-w-xs" aria-label="Todo list">
+    <aside className="w-full max-w-xs" aria-label="Notes">
       <div className="w-full py-2">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="text-sm font-medium text-foreground">Tasks</h2>
+          <h2 className="text-sm font-medium text-foreground">Notes</h2>
           <button
             type="button"
-            aria-label={items.length >= MAX_TODOS ? "Maximum 8 tasks reached" : "Add task"}
-            title={items.length >= MAX_TODOS ? "Maximum 8 tasks reached" : "Add task"}
-            disabled={items.length >= MAX_TODOS}
+            aria-label={items.length >= MAX_NOTES ? "Maximum 8 notes reached" : "Add note"}
+            title={items.length >= MAX_NOTES ? "Maximum 8 notes reached" : "Add note"}
+            disabled={items.length >= MAX_NOTES}
             onClick={() => {
-              if (items.length < MAX_TODOS) {
+              if (items.length < MAX_NOTES) {
                 onAddingChange(true);
               }
             }}
             className={`grid size-8 shrink-0 place-items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-              items.length >= MAX_TODOS
+              items.length >= MAX_NOTES
                 ? "cursor-not-allowed opacity-30 text-muted-foreground"
                 : "text-muted-foreground hover:bg-accent hover:text-foreground"
             }`}
@@ -169,28 +152,14 @@ export function TodoList({
         <div className="mt-4 space-y-3">
           {items.map((item) => (
             <div key={item.id} className="group flex items-start gap-2 text-sm">
-              <label className="flex min-w-0 flex-1 cursor-pointer items-start gap-3">
-                <input
-                  type="checkbox"
-                  checked={item.completed}
-                  onChange={() => onToggle(item.id)}
-                  className="peer sr-only"
-                />
-                <span className="mt-0.5 grid size-4 shrink-0 place-items-center rounded-sm border border-muted-foreground/60 text-transparent transition-colors peer-checked:border-foreground peer-checked:bg-foreground peer-checked:text-background peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background">
-                  <Check size={11} strokeWidth={2} />
-                </span>
-                <span
-                  className={`min-w-0 break-words text-foreground transition-opacity ${
-                    item.completed ? "line-through opacity-45" : ""
-                  }`}
-                >
-                  {item.text}
-                </span>
-              </label>
+              <span className="mt-2 size-1.5 shrink-0 rounded-full bg-muted-foreground/60" />
+              <span className="min-w-0 flex-1 break-words text-foreground">
+                {item.text}
+              </span>
               <button
                 type="button"
-                aria-label={`Remove task: ${item.text}`}
-                title="Remove task"
+                aria-label={`Remove note: ${item.text}`}
+                title="Remove note"
                 onClick={() => onDelete(item.id)}
                 className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full text-muted-foreground opacity-40 transition-opacity hover:bg-accent hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
@@ -200,7 +169,7 @@ export function TodoList({
           ))}
         </div>
 
-        {adding && items.length < MAX_TODOS && (
+        {adding && items.length < MAX_NOTES && (
           <form onSubmit={submit} className="mt-4">
             <input
               autoFocus
@@ -209,15 +178,15 @@ export function TodoList({
               onBlur={() => {
                 if (!draft.trim()) onAddingChange(false);
               }}
-              aria-label="New task"
-              placeholder="New task"
+              aria-label="New note"
+              placeholder="New note"
               className="w-full border-0 border-b border-muted-foreground/40 bg-transparent px-0 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-foreground"
             />
           </form>
         )}
 
         {!items.length && !adding && (
-          <p className="mt-4 text-xs text-muted-foreground">No tasks yet</p>
+          <p className="mt-4 text-xs text-muted-foreground">No notes yet</p>
         )}
       </div>
     </aside>

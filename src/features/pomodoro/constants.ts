@@ -6,6 +6,7 @@ export const DEFAULT_SETTINGS: PomodoroSettings = {
   longBreakMinutes: 15,
   backgroundUrl: "",
   longBreakInterval: 4,
+  showNotesAndTasks: true,
 };
 
 export const PHASE_LABELS: Record<Phase, string> = {

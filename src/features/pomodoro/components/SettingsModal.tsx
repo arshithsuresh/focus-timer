@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { MAX_MINUTES, MIN_MINUTES, PHASE_LABELS } from "../constants";
 import { clampSettings } from "../usePomodoro";
@@ -29,6 +30,7 @@ function sanitizeDraft(draft: PomodoroSettings, current: PomodoroSettings) {
   return clampSettings({
     ...current,
     backgroundUrl: draft.backgroundUrl.trim(),
+    showNotesAndTasks: draft.showNotesAndTasks ?? true,
     focusMinutes: parse(draft.focusMinutes as unknown as string, current.focusMinutes),
     shortBreakMinutes: parse(
       draft.shortBreakMinutes as unknown as string,
@@ -118,6 +120,27 @@ export function SettingsModal({
               placeholder="Image or video URL"
               className="mt-1.5 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
             />
+          </div>
+
+          <div className="pt-1">
+            <label
+              htmlFor="settings-show-notes-tasks"
+              className="flex cursor-pointer items-center gap-3 text-sm text-foreground select-none"
+            >
+              <input
+                id="settings-show-notes-tasks"
+                type="checkbox"
+                checked={draft.showNotesAndTasks ?? true}
+                onChange={(event) =>
+                  setDraft({ ...draft, showNotesAndTasks: event.target.checked })
+                }
+                className="peer sr-only"
+              />
+              <span className="grid size-4 shrink-0 place-items-center rounded-sm border border-muted-foreground/60 text-transparent transition-colors peer-checked:border-foreground peer-checked:bg-foreground peer-checked:text-background peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background">
+                <Check size={11} strokeWidth={2} />
+              </span>
+              <span>Display Notes and Tasks</span>
+            </label>
           </div>
         </div>
         <div className="mt-8 flex items-center justify-end gap-3">
