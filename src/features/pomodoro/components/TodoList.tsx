@@ -1,5 +1,5 @@
 import { Check, ChevronLeft, ChevronRight, Plus, X } from "lucide-react";
-import type { FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 export interface TodoItem {
   id: number;
@@ -7,31 +7,131 @@ export interface TodoItem {
   completed: boolean;
 }
 
-interface TodoListProps {
-  items: TodoItem[];
-  expanded: boolean;
-  adding: boolean;
-  draft: string;
-  onAdd: (text: string) => void;
-  onToggle: (id: number) => void;
-  onDelete: (id: number) => void;
-  onExpandedChange: (expanded: boolean) => void;
-  onAddingChange: (adding: boolean) => void;
-  onDraftChange: (draft: string) => void;
+export const TODOS_STORAGE_KEY = "zen_timer_todos";
+
+export function isValidTodoItem(item: unknown): item is TodoItem {
+  return (
+    typeof item === "object" &&
+    item !== null &&
+    typeof (item as TodoItem).id === "number" &&
+    typeof (item as TodoItem).text === "string" &&
+    typeof (item as TodoItem).completed === "boolean"
+  );
+}
+
+export function loadStoredTodos(key: string = TODOS_STORAGE_KEY): TodoItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      return parsed.filter(isValidTodoItem);
+    }
+  } catch (error) {
+    console.error("Failed to load todos from localStorage:", error);
+  }
+  return [];
+}
+
+export function saveStoredTodos(
+  todos: TodoItem[],
+  key: string = TODOS_STORAGE_KEY,
+): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify(todos));
+  } catch (error) {
+    console.error("Failed to save todos to localStorage:", error);
+  }
+}
+
+export interface TodoListProps {
+  items?: TodoItem[];
+  expanded?: boolean;
+  adding?: boolean;
+  draft?: string;
+  onAdd?: (text: string) => void;
+  onToggle?: (id: number) => void;
+  onDelete?: (id: number) => void;
+  onExpandedChange?: (expanded: boolean) => void;
+  onAddingChange?: (adding: boolean) => void;
+  onDraftChange?: (draft: string) => void;
+  storageKey?: string;
 }
 
 export function TodoList({
-  items,
-  expanded,
-  adding,
-  draft,
-  onAdd,
-  onToggle,
-  onDelete,
-  onExpandedChange,
-  onAddingChange,
-  onDraftChange,
-}: TodoListProps) {
+  items: externalItems,
+  expanded: externalExpanded,
+  adding: externalAdding,
+  draft: externalDraft,
+  onAdd: externalOnAdd,
+  onToggle: externalOnToggle,
+  onDelete: externalOnDelete,
+  onExpandedChange: externalOnExpandedChange,
+  onAddingChange: externalOnAddingChange,
+  onDraftChange: externalOnDraftChange,
+  storageKey = TODOS_STORAGE_KEY,
+}: TodoListProps = {}) {
+  const [internalItems, setInternalItems] = useState<TodoItem[]>(() =>
+    externalItems === undefined ? loadStoredTodos(storageKey) : [],
+  );
+
+  useEffect(() => {
+    if (externalItems === undefined) {
+      saveStoredTodos(internalItems, storageKey);
+    }
+  }, [internalItems, externalItems, storageKey]);
+
+  useEffect(() => {
+    if (externalItems !== undefined) return;
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === storageKey) {
+        setInternalItems(loadStoredTodos(storageKey));
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, [externalItems, storageKey]);
+
+  const items = externalItems ?? internalItems;
+
+  const onAdd =
+    externalOnAdd ??
+    ((text: string) => {
+      setInternalItems((curr) => [
+        ...curr,
+        { id: Date.now(), text, completed: false },
+      ]);
+    });
+
+  const onToggle =
+    externalOnToggle ??
+    ((id: number) => {
+      setInternalItems((curr) =>
+        curr.map((item) =>
+          item.id === id ? { ...item, completed: !item.completed } : item,
+        ),
+      );
+    });
+
+  const onDelete =
+    externalOnDelete ??
+    ((id: number) => {
+      setInternalItems((curr) => curr.filter((item) => item.id !== id));
+    });
+
+  const [internalExpanded, setInternalExpanded] = useState(false);
+  const [internalAdding, setInternalAdding] = useState(false);
+  const [internalDraft, setInternalDraft] = useState("");
+
+  const expanded = externalExpanded ?? internalExpanded;
+  const onExpandedChange = externalOnExpandedChange ?? setInternalExpanded;
+  const adding = externalAdding ?? internalAdding;
+  const onAddingChange = externalOnAddingChange ?? setInternalAdding;
+  const draft = externalDraft ?? internalDraft;
+  const onDraftChange = externalOnDraftChange ?? setInternalDraft;
+
   const submit = (event: FormEvent) => {
     event.preventDefault();
     const text = draft.trim();

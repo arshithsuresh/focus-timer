@@ -4,16 +4,21 @@ import { GearIcon } from "@/features/pomodoro/components/GearIcon";
 import { SettingsModal } from "@/features/pomodoro/components/SettingsModal";
 import { ThemeToggle } from "@/features/pomodoro/components/ThemeToggle";
 import { TimerDisplay } from "@/features/pomodoro/components/TimerDisplay";
-import { TodoList, type TodoItem } from "@/features/pomodoro/components/TodoList";
+import {
+  TodoList,
+  TODOS_STORAGE_KEY,
+  loadStoredTodos,
+  saveStoredTodos,
+  type TodoItem,
+} from "@/features/pomodoro/components/TodoList";
 import { usePomodoro } from "@/features/pomodoro/usePomodoro";
 import { useEffect, useState } from "react";
 
 export default function App() {
   const pomodoro = usePomodoro();
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [isDark, setIsDark] = useState(false);
-  const [todos, setTodos] = useState<TodoItem[]>([]);
-  const [nextTodoId, setNextTodoId] = useState(1);
+  const [isDark, setIsDark] = useState(true);
+  const [todos, setTodos] = useState<TodoItem[]>(() => loadStoredTodos());
   const [todoExpanded, setTodoExpanded] = useState(false);
   const [todoAdding, setTodoAdding] = useState(false);
   const [todoDraft, setTodoDraft] = useState("");
@@ -23,9 +28,25 @@ export default function App() {
     return () => document.documentElement.classList.remove("dark");
   }, [isDark]);
 
+  useEffect(() => {
+    saveStoredTodos(todos);
+  }, [todos]);
+
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === TODOS_STORAGE_KEY) {
+        setTodos(loadStoredTodos());
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   const addTodo = (text: string) => {
-    setTodos((current) => [...current, { id: nextTodoId, text, completed: false }]);
-    setNextTodoId((current) => current + 1);
+    setTodos((current) => [
+      ...current,
+      { id: Date.now(), text, completed: false },
+    ]);
   };
 
   return (
