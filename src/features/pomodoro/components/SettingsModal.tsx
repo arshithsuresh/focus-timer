@@ -30,6 +30,7 @@ function sanitizeDraft(draft: PomodoroSettings, current: PomodoroSettings) {
   return clampSettings({
     ...current,
     backgroundUrl: draft.backgroundUrl.trim(),
+    youtubeUrl: (draft.youtubeUrl || "").trim(),
     showNotesAndTasks: draft.showNotesAndTasks ?? true,
     focusMinutes: parse(draft.focusMinutes as unknown as string, current.focusMinutes),
     shortBreakMinutes: parse(
@@ -118,6 +119,25 @@ export function SettingsModal({
                 setDraft({ ...draft, backgroundUrl: event.target.value })
               }
               placeholder="Image or video URL"
+              className="mt-1.5 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="settings-youtube-url"
+              className="text-sm text-muted-foreground"
+            >
+              YouTube Music URL
+            </label>
+            <input
+              id="settings-youtube-url"
+              type="url"
+              value={draft.youtubeUrl || ""}
+              onChange={(event) =>
+                setDraft({ ...draft, youtubeUrl: event.target.value })
+              }
+              placeholder="YouTube video or playlist URL"
               className="mt-1.5 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
             />
           </div>

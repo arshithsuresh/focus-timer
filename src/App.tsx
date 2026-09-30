@@ -2,6 +2,10 @@ import { BackgroundManager } from "@/features/pomodoro/components/BackgroundMana
 import { Controls } from "@/features/pomodoro/components/Controls";
 import { GearIcon } from "@/features/pomodoro/components/GearIcon";
 import {
+  MusicPlayer,
+  type MusicPlayerHandle,
+} from "@/features/pomodoro/components/MusicPlayer";
+import {
   loadStoredNotes,
   MAX_NOTES,
   Notes,
@@ -21,10 +25,11 @@ import {
   type TodoItem,
 } from "@/features/pomodoro/components/TodoList";
 import { usePomodoro } from "@/features/pomodoro/usePomodoro";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function App() {
   const pomodoro = usePomodoro();
+  const musicPlayerRef = useRef<MusicPlayerHandle>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isDark, setIsDark] = useState(true);
 
@@ -37,6 +42,11 @@ export default function App() {
   const [notes, setNotes] = useState<NoteItem[]>(() => loadStoredNotes());
   const [noteAdding, setNoteAdding] = useState(false);
   const [noteDraft, setNoteDraft] = useState("");
+
+  const handleStart = () => {
+    pomodoro.start();
+    musicPlayerRef.current?.play();
+  };
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
@@ -128,7 +138,7 @@ export default function App() {
             />
             <Controls
               isRunning={pomodoro.isRunning}
-              onStart={pomodoro.start}
+              onStart={handleStart}
               onPause={pomodoro.pause}
               onReset={pomodoro.reset}
             />
@@ -163,12 +173,18 @@ export default function App() {
           />
           <Controls
             isRunning={pomodoro.isRunning}
-            onStart={pomodoro.start}
+            onStart={handleStart}
             onPause={pomodoro.pause}
             onReset={pomodoro.reset}
           />
         </main>
       )}
+
+      <MusicPlayer
+        ref={musicPlayerRef}
+        url={pomodoro.settings.youtubeUrl}
+        onOpenSettings={() => setSettingsOpen(true)}
+      />
 
       <SettingsModal
         open={settingsOpen}

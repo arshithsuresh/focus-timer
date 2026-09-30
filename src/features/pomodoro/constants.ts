@@ -7,6 +7,7 @@ export const DEFAULT_SETTINGS: PomodoroSettings = {
   backgroundUrl: "",
   longBreakInterval: 4,
   showNotesAndTasks: true,
+  youtubeUrl: "",
 };
 
 export const PHASE_LABELS: Record<Phase, string> = {

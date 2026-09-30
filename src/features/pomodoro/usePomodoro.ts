@@ -17,6 +17,7 @@ export function clampSettings(settings: PomodoroSettings): PomodoroSettings {
     shortBreakMinutes: clampMinutes(settings.shortBreakMinutes),
     longBreakMinutes: clampMinutes(settings.longBreakMinutes),
     showNotesAndTasks: settings.showNotesAndTasks ?? true,
+    youtubeUrl: (settings.youtubeUrl || "").trim(),
   };
 }
 

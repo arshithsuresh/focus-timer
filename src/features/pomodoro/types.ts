@@ -8,4 +8,5 @@ export interface PomodoroSettings {
   /** Number of completed focus sessions before a long break. */
   longBreakInterval: number;
   showNotesAndTasks: boolean;
+  youtubeUrl: string;
 }
